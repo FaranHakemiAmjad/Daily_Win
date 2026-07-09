@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1077498781792",
+    "project_id": "daily-win-26bea",
+    "storage_bucket": "daily-win-26bea.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077498781792:android:bc703be7c40cc89b6ce305",
+        "android_client_info": {
+          "package_name": "com.example.daily_win"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJwVn_80dwYMb6_66AEcszQRPjif-LIqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

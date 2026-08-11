@@ -9,3 +9,8 @@ class CacheException implements Exception {
   final String message;
   const CacheException({required this.message});
 }
+
+class ProfileException implements Exception {
+  final String message;
+  const ProfileException({required this.message});
+}

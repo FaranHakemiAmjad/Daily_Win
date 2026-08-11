@@ -15,7 +15,8 @@ class UserProfileTable extends Table{
 
   TextColumn get biography => text().nullable()();
 
-  // Tells Drift which column is the primary key
+  TextColumn get profileImagePath => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {username};
 

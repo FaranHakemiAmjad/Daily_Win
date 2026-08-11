@@ -23,7 +23,7 @@ class AppDatabase extends _$AppDatabase {
   // Increment this when you change your schema
   // Drift will run migration logic when version changes
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   // Access your DAO like this: db.userDao.getCachedUser()
   @override
@@ -37,10 +37,10 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(userProfileTable);
       }
 
-      // if(from <3) {
-      //   await m.addColumn(userAccountTable, userAccountTable.hasProfile as GeneratedColumn<Object>);
-      // }
-      // handle schema changes here when schemaVersion bumps
+      if(from <3) {
+        await m.addColumn(userProfileTable, userProfileTable.profileImagePath);
+      }
+
     },
   );
 }

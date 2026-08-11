@@ -21,10 +21,17 @@ import 'features/auth/domain/usecases/sign_up.dart';
 import 'features/auth/domain/usecases/sign_in_with_google.dart';
 import 'features/auth/domain/usecases/sign_out.dart';
 
+// Profile Management - datasources
+import 'package:daily_win/features/profile_manager/data/datasource/local/profile_manager_local_datasource.dart';
+import 'package:daily_win/features/profile_manager/data/datasource/remote/profle_manager_remote_datasource.dart';
+
+// Profile Management - repository
+// Profile Management - usecases
+
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
-
   sl.registerLazySingleton(() => AppDatabase());
 
   sl.registerLazySingleton(() => FirebaseAuth.instance);
@@ -43,21 +50,29 @@ Future<void> init() async {
 
   // Auth local datasource — needs AppDatabase
   sl.registerLazySingleton<AuthLocalDataSource>(
-        () => AuthLocalDataSourceImpl(
+    () => AuthLocalDataSourceImpl(
       db: sl(), // GetIt resolves AppDatabase registered above
     ),
   );
 
   // Auth remote datasource — needs FirebaseAuth and GoogleSignIn
   sl.registerLazySingleton<AuthFirebaseDataSource>(
-        () => AuthFirebaseDataSourceImpl(
+    () => AuthFirebaseDataSourceImpl(
       firebaseAuth: sl(), // GetIt resolves FirebaseAuth
       // googleSignIn: sl(), // GetIt resolves GoogleSignIn
     ),
   );
 
   sl.registerLazySingleton<AuthFirestoreDataSource>(
-        () => AuthFirestoreDataSourceImpl(firestore: sl()),
+    () => AuthFirestoreDataSourceImpl(firestore: sl()),
+  );
+
+  // Profile Management
+  sl.registerLazySingleton<ProfileManagerLocalDatasource>(
+    () => ProfileManagerLocalDatasourceImpl(db: sl()),
+  );
+  sl.registerLazySingleton<ProfileManagerRemoteDatasource>(
+      () => ProfileManagerRemoteDatasourceImpl(firestore : sl()),
   );
 
   // ── 3. REPOSITORIES ───────────────────────────────────────
@@ -67,10 +82,10 @@ Future<void> init() async {
   // Auth repository — needs auth datasources AND profile repository
   // profile repository is needed to create profile after sign up
   sl.registerLazySingleton<AuthRepository>(
-        () => AuthRepositoryImpl(
-      remoteDataSource: sl(),  // GetIt resolves AuthRemoteDataSource
+    () => AuthRepositoryImpl(
+      remoteDataSource: sl(), // GetIt resolves AuthRemoteDataSource
       localDataSource: sl(), // GetIt resolves AuthLocalDataSource
-          firestoreDataSource: sl(),
+      firestoreDataSource: sl(),
     ),
   );
 
@@ -80,20 +95,11 @@ Future<void> init() async {
   // No need to register as abstract — usecases are not abstracted.
 
   // Auth usecases — all depend on AuthRepository
-  sl.registerLazySingleton(
-        () => GetCachedUserUseCase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => GetCachedUserUseCase(repository: sl()));
 
-  sl.registerLazySingleton(
-        () => SignInWithEmailUseCase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => SignInWithEmailUseCase(repository: sl()));
 
-  sl.registerLazySingleton(
-        () => SignUpUseCase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => SignUpUseCase(repository: sl()));
 
-  sl.registerLazySingleton(
-        () => SignOutUseCase(repository: sl()),
-  );
-
+  sl.registerLazySingleton(() => SignOutUseCase(repository: sl()));
 }

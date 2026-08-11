@@ -35,3 +35,34 @@ class OfflineFailure extends Failure {
 class UnknownFailure extends Failure {
   const UnknownFailure({super.message = 'Something went wrong.'});
 }
+
+// Profile failures
+class ProfileNotFoundFailure extends Failure {
+  const ProfileNotFoundFailure()
+      : super(message: 'Profile not found. Please complete setup.');
+}
+
+class ProfileAlreadyExistsFailure extends Failure {
+  const ProfileAlreadyExistsFailure()
+      : super(message: 'Profile already exists.');
+}
+
+class ProfileUpdateFailure extends Failure {
+  const ProfileUpdateFailure()
+      : super(message: 'Failed to update profile. Please try again.');
+}
+
+class PhotoUploadFailure extends Failure {
+  const PhotoUploadFailure()
+      : super(message: 'Failed to upload photo. Please try again.');
+}
+
+class DisplayNameTooShortFailure extends Failure {
+  const DisplayNameTooShortFailure()
+      : super(message: 'Display name must be at least 2 characters.');
+}
+
+class BioTooLongFailure extends Failure {
+  const BioTooLongFailure()
+      : super(message: 'Bio must be under 150 characters.');
+}

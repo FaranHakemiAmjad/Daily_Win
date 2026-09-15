@@ -28,7 +28,8 @@ class ProfileManagerRemoteDatasourceImpl implements ProfileManagerRemoteDatasour
   Future<void> createUserDocument(UserProfileModel profile) async {
     try {
       await _doc(profile.id).set(
-        profile.toFirestore());
+        profile.toFirestore(),
+        SetOptions(merge: true));
     } catch (e) {
       throw ProfileException(message: e.toString());
     }

@@ -72,7 +72,7 @@ class UserProfileModel extends UserProfileEntity {
     return UserProfileEntity(
       id: id,
       username: username,
-      gender: gender,
+      gender: gender as Gender,
       dateOfBirth: dateOfBirth,
       biography: biography,
       profileImagePath: profileImagePath,
@@ -83,10 +83,10 @@ class UserProfileModel extends UserProfileEntity {
     return {
       'id': id,
       'username': username,
-      'gender': gender,
+      'gender': gender.toString(),
       'dateOfBirth': dateOfBirth,
       'biography': biography,
-      'profileImage': profileImage,
+      'profileImage': profileImage.toString(),
       'profileImagePath': profileImagePath,
     };
   }

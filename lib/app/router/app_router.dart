@@ -1,5 +1,6 @@
 import 'package:daily_win/features/auth/presentation/pages/create_account_page.dart';
 import 'package:daily_win/features/auth/presentation/pages/start_page.dart';
+import 'package:daily_win/features/profile_manager/presentation/pages/profile_detail_page.dart';
 import 'package:daily_win/features/profile_manager/presentation/pages/profile_setup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,8 +15,7 @@ import '../shell/main_shell.dart';
 import 'app_routes.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-
-  final hasProfile = ref.watch(hasProfileProvider);
+  final hasProfileAsync = ref.watch(hasProfileProvider);
 
   return GoRouter(
     initialLocation: AppRoutes.splash,
@@ -36,9 +36,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           location == AppRoutes.splash ||
           location == AppRoutes.signUp;
 
+      final hasProfile = hasProfileAsync.value ?? false;
+
       if (user != null && isAuthPage && hasProfile) return AppRoutes.home;
       if (user == null && !isAuthPage) return AppRoutes.splash;
-      if(user != null && !hasProfile && !isProfileSetup && !isAuthPage) return AppRoutes.profileSetupPath;
+      if (user != null && !hasProfile && !isProfileSetup && !isAuthPage) {
+        return AppRoutes.profileSetupPath;
+      }
 
       return null;
     },
@@ -95,10 +99,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               //     ),
               //   ],
               // ),
-              // GoRoute(
-              //   path: AppRoutes.profile,
-              //   builder: (context, state) => const ProfilePage(),
             ],
+          ),
+          GoRoute(
+            path: AppRoutes.profile,
+            builder: (context, state) => const ProfileDetailPage(),
           ),
         ],
       ),

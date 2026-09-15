@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daily_win/features/profile_manager/data/repositories/profile_manager_repository_impl.dart';
+import 'package:daily_win/features/profile_manager/domain/repositories/profile_manager_repository.dart';
+import 'package:daily_win/features/profile_manager/domain/usecases/create_user_profile.dart';
 import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -25,9 +28,10 @@ import 'features/auth/domain/usecases/sign_out.dart';
 import 'package:daily_win/features/profile_manager/data/datasource/local/profile_manager_local_datasource.dart';
 import 'package:daily_win/features/profile_manager/data/datasource/remote/profle_manager_remote_datasource.dart';
 
+import 'features/profile_manager/domain/usecases/get_user_profile.dart';
+
 // Profile Management - repository
 // Profile Management - usecases
-
 
 final sl = GetIt.instance;
 
@@ -72,7 +76,7 @@ Future<void> init() async {
     () => ProfileManagerLocalDatasourceImpl(db: sl()),
   );
   sl.registerLazySingleton<ProfileManagerRemoteDatasource>(
-      () => ProfileManagerRemoteDatasourceImpl(firestore : sl()),
+    () => ProfileManagerRemoteDatasourceImpl(firestore: sl()),
   );
 
   // ── 3. REPOSITORIES ───────────────────────────────────────
@@ -89,6 +93,14 @@ Future<void> init() async {
     ),
   );
 
+  // Profile Management repository
+  sl.registerLazySingleton <ProfileManagerRepository>(
+        () => ProfileManagerRepositoryImpl(
+          localDatasource: sl(),
+          remoteDatasource: sl(),
+        ),
+      );
+
   // ── 4. USECASES ───────────────────────────────────────────
   // Each usecase gets its own registration.
   // They all depend on their respective repository.
@@ -102,4 +114,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SignUpUseCase(repository: sl()));
 
   sl.registerLazySingleton(() => SignOutUseCase(repository: sl()));
+
+  // Profile Management usecases
+  sl.registerLazySingleton(() => CreateUserProfileUseCase(repository: sl()));
+
+  sl.registerLazySingleton(() => GetUserProfileUseCase(repository: sl()));
+
+
 }

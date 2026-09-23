@@ -3,6 +3,7 @@ import 'package:daily_win/features/auth/presentation/pages/start_page.dart';
 import 'package:daily_win/features/profile_manager/presentation/pages/profile_detail_page.dart';
 import 'package:daily_win/features/profile_manager/presentation/pages/profile_setup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -76,6 +77,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // ShellRoute keeps bottom nav alive across tab switches
       ShellRoute(
         builder: (context, state, child) => MainShell(child: child),
+        // builder: (context, state, child) {
+        //   return Scaffold(
+        //     body: child,
+        //     bottomNavigationBar: BottomAppBar(),
+        //   );
+        // },
+
         routes: [
           GoRoute(
             path: AppRoutes.home,

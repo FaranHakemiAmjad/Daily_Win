@@ -11,7 +11,7 @@ import '../../core/utils/go_router_refresh_stream.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/providers/auth_providers.dart';
-import '../../features/habit_tracker/presentation/pages/home_page.dart';
+import '../../features/habit_manager/habit_query/presentation/pages/home_page.dart';
 import '../shell/main_shell.dart';
 import 'app_routes.dart';
 

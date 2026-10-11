@@ -1,15 +1,18 @@
+import 'package:daily_win/features/habit_manager/habit_mutation/presentation/widgets/habit_creation_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:go_router/go_router.dart';
 import '../router/app_routes.dart';
 
-
 class CustomNavBar extends StatelessWidget {
-
   final int currentIndex;
   final ValueChanged<int> onTabSelected;
 
-  const CustomNavBar({super.key, required this.currentIndex, required this.onTabSelected});
+  const CustomNavBar({
+    super.key,
+    required this.currentIndex,
+    required this.onTabSelected,
+  });
 
   // helper — returns colored icon when selected, grey when not
   Widget _navIcon(IconData icon, int index) {
@@ -50,21 +53,30 @@ class CustomNavBar extends StatelessWidget {
             // Icon(Icons.explore, color: Colors.grey),
             _navIcon(Icons.explore, 1),
             Container(
-                width: 60.0,
-                height: 40.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  // color: Color.fromARGB(255, 21, 40, 255),
-                  gradient: LinearGradient(
-                    begin: AlignmentGeometry.topLeft,
-                    end: AlignmentGeometry.bottomRight,
-                    colors: [
-                      Color.fromARGB(255, 21, 40, 255),
-                      Color.fromARGB(255, 80, 129, 255),
-                    ],
-                  ),
+              width: 60.0,
+              height: 40.0,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                // color: Color.fromARGB(255, 21, 40, 255),
+                gradient: LinearGradient(
+                  begin: AlignmentGeometry.topLeft,
+                  end: AlignmentGeometry.bottomRight,
+                  colors: [
+                    Color.fromARGB(255, 21, 40, 255),
+                    Color.fromARGB(255, 80, 129, 255),
+                  ],
                 ),
-                child: Icon(Icons.add, size: 36.0, color: Colors.white,)
+              ),
+              child: GestureDetector(
+                onTap: () => showBottomSheet(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.widthOf(context) - 40,
+                  ),
+                  context: context,
+                  builder: (context) => HabitCreationPopup(),
+                ),
+                child: Icon(Icons.add, size: 36.0, color: Colors.white),
+              ),
             ),
             _navIcon(Icons.wine_bar, 2),
             // Icon(Icons.wine_bar, color: Colors.grey),
@@ -90,9 +102,12 @@ class MainShell extends StatelessWidget {
 
   void _onTabSelected(BuildContext context, int index) {
     switch (index) {
-      case 0: context.go(AppRoutes.home);
-      case 1: context.go(AppRoutes.feed);
-      case 3: context.go(AppRoutes.profile);
+      case 0:
+        context.go(AppRoutes.home);
+      case 1:
+        context.go(AppRoutes.feed);
+      case 3:
+        context.go(AppRoutes.profile);
     }
   }
 

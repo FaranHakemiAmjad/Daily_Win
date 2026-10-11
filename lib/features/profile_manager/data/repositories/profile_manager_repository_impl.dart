@@ -61,6 +61,7 @@ class ProfileManagerRepositoryImpl implements ProfileManagerRepository {
     } on CacheException catch (e) {
       return Left(UnknownFailure(message: e.toString()));
     } on ProfileException catch(e) {
+      logger.e(e.toString());
       return Left(UnknownFailure(message: e.toString()));
     }
   }

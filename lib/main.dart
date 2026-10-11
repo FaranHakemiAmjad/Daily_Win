@@ -2,9 +2,12 @@ import 'package:daily_win/app/app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'injection_container.dart' as di;
 
 import 'firebase_options.dart';
+
+Logger logger = Logger();
 
 void main() async {
 

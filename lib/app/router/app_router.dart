@@ -1,9 +1,9 @@
 import 'package:daily_win/features/auth/presentation/pages/create_account_page.dart';
 import 'package:daily_win/features/auth/presentation/pages/start_page.dart';
+import 'package:daily_win/features/habit_manager/habit_mutation/presentation/pages/create_habit_page.dart';
 import 'package:daily_win/features/profile_manager/presentation/pages/profile_detail_page.dart';
 import 'package:daily_win/features/profile_manager/presentation/pages/profile_setup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,11 +39,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
       final hasProfile = hasProfileAsync.value ?? false;
 
-      if (user != null && isAuthPage && hasProfile) return AppRoutes.home;
-      if (user == null && !isAuthPage) return AppRoutes.splash;
-      if (user != null && !hasProfile && !isProfileSetup && !isAuthPage) {
-        return AppRoutes.profileSetupPath;
+      if (user != null) {
+        if (hasProfile) {
+          if (isAuthPage || isProfileSetup) return AppRoutes.home;
+        } else {
+          if (!isProfileSetup) return AppRoutes.profileSetupPath;
+        }
       }
+
+      if (user == null && !isAuthPage) return AppRoutes.splash;
 
       return null;
     },
@@ -77,36 +81,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // ShellRoute keeps bottom nav alive across tab switches
       ShellRoute(
         builder: (context, state, child) => MainShell(child: child),
-        // builder: (context, state, child) {
-        //   return Scaffold(
-        //     body: child,
-        //     bottomNavigationBar: BottomAppBar(),
-        //   );
-        // },
 
         routes: [
           GoRoute(
             path: AppRoutes.home,
             builder: (context, state) => const HomePage(),
             routes: [
-              //       path: 'add-habit', // relative — resolves to /home/add-habit
-              //       builder: (context, state) => const AddHabitPage(),
-              //     ),
-              //   ],
-              // ),
-              // GoRoute(
-              //   path: AppRoutes.feed,
-              //   builder: (context, state) => const FeedPage(),
-              //   routes: [
-              //     GoRoute(
-              //       path: 'activity/:id', // relative — resolves to /feed/activity/:id
-              //       builder: (context, state) {
-              //         final id = state.pathParameters['id']!;
-              //         return ActivityDetailPage(activityId: id);
-              //       },
-              //     ),
-              //   ],
-              // ),
+
             ],
           ),
           GoRoute(
@@ -114,6 +95,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const ProfileDetailPage(),
           ),
         ],
+      ),
+
+      // Create Habit Screen
+      GoRoute(
+        path: AppRoutes.addHabit,
+        builder: (context, state) => const CreateHabitPage(),
       ),
     ],
   );

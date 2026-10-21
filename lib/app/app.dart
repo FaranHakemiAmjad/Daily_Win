@@ -28,8 +28,17 @@ final appTheme = ThemeData(
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.white,
   ),
+  // Bottom Sheet
+  // bottomSheetTheme: BottomSheetThemeData(
+  //   backgroundColor: Colors.transparent,
+  //   surfaceTintColor: Colors.transparent,
+  //   modalBackgroundColor: Colors.transparent,
+  //   modalBarrierColor: Colors.transparent
+  // ),
   useMaterial3: true,
 );
+
+// -----------------------------------------------------------------------------
 
 class DailyWinApp extends ConsumerWidget {
   const DailyWinApp({super.key});

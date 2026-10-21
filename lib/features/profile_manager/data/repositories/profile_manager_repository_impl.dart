@@ -1,4 +1,3 @@
-import 'package:cross_file/src/types/interface.dart';
 import 'package:daily_win/core/error/exceptions.dart';
 import 'package:daily_win/core/error/failures.dart';
 import 'package:daily_win/core/utils/constants.dart';
@@ -54,13 +53,16 @@ class ProfileManagerRepositoryImpl implements ProfileManagerRepository {
         return const Right(null);
       }
 
-      // await localDatasource.cacheUser(remoteProfile);
+      await localDatasource.cacheUser(remoteProfile);
 
       return Right(remoteProfile);
 
     } on CacheException catch (e) {
       return Left(UnknownFailure(message: e.toString()));
     } on ProfileException catch(e) {
+      logger.e(e.toString());
+      return Left(UnknownFailure(message: e.toString()));
+    } catch (e) {
       logger.e(e.toString());
       return Left(UnknownFailure(message: e.toString()));
     }

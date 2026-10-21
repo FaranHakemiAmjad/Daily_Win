@@ -40,6 +40,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       // final user = await firestoreDataSource.getUserDocument(authUser.uid);
 
+      await localDataSource.clearUser();
       await localDataSource.cacheUser(authUser);
 
       return Right(authUser);
@@ -59,6 +60,7 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
         password: password,
       );
+      await localDataSource.clearUser();
       await localDataSource.cacheUser(user);
 
       await firestoreDataSource.createUserDocument(user);

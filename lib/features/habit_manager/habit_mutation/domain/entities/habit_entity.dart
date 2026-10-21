@@ -12,7 +12,7 @@ class HabitEntity {
   final Color color;
   final HabitTarget target;
   final HabitSchedule schedule;
-  final HabitReminder? reminder;
+  final List<HabitReminder>? reminders;
 
   HabitEntity.name({
     required this.id,
@@ -26,7 +26,7 @@ class HabitEntity {
     required this.color,
     required this.target,
     required this.schedule,
-    this.reminder
+    this.reminders
   });
 }
 

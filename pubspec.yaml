@@ -52,6 +52,7 @@ dependencies:
   intl: ^0.20.3
   image_picker: ^1.2.3
   logger: ^2.8.0
+  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:

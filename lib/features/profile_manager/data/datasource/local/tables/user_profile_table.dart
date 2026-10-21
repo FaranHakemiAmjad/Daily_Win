@@ -5,6 +5,7 @@ import '../../../../domain/entities/user_profile_entity.dart';
 
 class UserProfileTable extends Table{
 
+  // TextColumn get id => text().references(UserAccountTable, #id)();
   TextColumn get id => text().references(UserAccountTable, #id)();
 
   TextColumn get username => text()();

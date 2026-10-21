@@ -1,8 +1,6 @@
-import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_win/core/database/app_database.dart';
 import 'package:daily_win/features/profile_manager/domain/entities/user_profile_entity.dart';
-import 'package:image_picker/image_picker.dart';
 
 class UserProfileModel extends UserProfileEntity {
   UserProfileModel({
@@ -31,8 +29,8 @@ class UserProfileModel extends UserProfileEntity {
   factory UserProfileModel.fromFirestore(Map<String, dynamic> json) {
     return UserProfileModel(
       id: json['uid'] as String,
-      username: json['email'] as String,
-      gender: json['gender'] as Gender,
+      username: json['username'] as String,
+      gender: Gender.values.firstWhere((e) => e.name == json['gender']),
       dateOfBirth: json['dateOfBirth'] as DateTime,
       biography: json['biography'] as String,
       // profileImage: json['profileImage'] as XFile,
@@ -72,7 +70,7 @@ class UserProfileModel extends UserProfileEntity {
     return UserProfileEntity(
       id: id,
       username: username,
-      gender: gender as Gender,
+      gender: gender,
       dateOfBirth: dateOfBirth,
       biography: biography,
       profileImagePath: profileImagePath,
@@ -81,9 +79,9 @@ class UserProfileModel extends UserProfileEntity {
 
   Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
+      'uid': id,
       'username': username,
-      'gender': gender.toString(),
+      'gender': gender.name,
       'dateOfBirth': dateOfBirth,
       'biography': biography,
       'profileImage': profileImage.toString(),

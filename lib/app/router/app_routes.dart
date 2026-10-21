@@ -6,7 +6,9 @@ class AppRoutes {
   static const profileSetupPath = '/sign-up/profile-setup';
 
   static const home       = '/home';
-  static const addHabit   = '/home/add-habit';
+  static const addHabit   = '/add-habit';
+  static const addHabitPath   = '/home/add-habit';
+
 
   static const feed            = '/feed';
   static const activityDetail  = '/feed/activity/:id';

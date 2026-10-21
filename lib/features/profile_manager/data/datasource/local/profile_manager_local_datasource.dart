@@ -15,7 +15,17 @@ class ProfileManagerLocalDatasourceImpl extends ProfileManagerLocalDatasource {
   ProfileManagerLocalDatasourceImpl({required this.db});
 
   @override
-  Future<void> cacheUser(UserProfileModel profile) {
+  Future<void> cacheUser(UserProfileModel profile) async {
+    // Ensure parent account row exists in UserAccountTable to satisfy FK constraint
+    // final userAccount = await db.userAccountDao.getCachedUser();
+    // if (userAccount == null || userAccount.id != profile.id) {
+    //   await db.userAccountDao.cacheUser(
+    //     UserAccountTableData(
+    //       id: profile.id,
+    //       email: profile.username,
+    //     ),
+    //   );
+    // }
     return db.userProfileDao.cacheUserProfile(profile.toDriftCompanion());
   }
 
@@ -27,7 +37,8 @@ class ProfileManagerLocalDatasourceImpl extends ProfileManagerLocalDatasource {
   @override
   Future<UserProfileModel?> getUser(String id) async {
     final row = await db.userProfileDao.getUser(id);
-    final profile = UserProfileModel.fromDrift(row!);
+    if (row == null) return null;
+    final profile = UserProfileModel.fromDrift(row);
     return profile;
   }
 

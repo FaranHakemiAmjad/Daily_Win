@@ -36,7 +36,7 @@ class ProfileManagerRemoteDatasourceImpl implements ProfileManagerRemoteDatasour
   }
 
   @override
-  Future<UserProfileModel?> getUserDocument(String uid) async{
+  Future<UserProfileModel?> getUserDocument(String uid) async {
     try {
       final snapshot = await _doc(uid).get();
       if (!snapshot.exists) return null;

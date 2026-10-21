@@ -12,7 +12,7 @@ Widget card() {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15.0),
-        border: BoxBorder.all(color: Colors.black),
+        border: BoxBorder.all(color: Colors.black12),
       ),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -41,13 +41,13 @@ Widget card() {
               ],
             ),
             Container(
-              width: 36.0,
-              height: 36.0,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(15.0),
-                border: BoxBorder.all(color: Colors.black),
-              ),
+                width: 36.0,
+                height: 36.0,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: BoxBorder.all(color: Colors.black),
+                ),
                 child: Icon(Icons.add, size: 26.0, color: Colors.black,)
             ),
           ],

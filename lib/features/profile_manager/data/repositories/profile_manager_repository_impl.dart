@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_win/core/error/exceptions.dart';
 import 'package:daily_win/core/error/failures.dart';
 import 'package:daily_win/core/utils/constants.dart';
@@ -62,7 +63,7 @@ class ProfileManagerRepositoryImpl implements ProfileManagerRepository {
     } on ProfileException catch(e) {
       logger.e(e.toString());
       return Left(UnknownFailure(message: e.toString()));
-    } catch (e) {
+    } on FirebaseException catch (e) {
       logger.e(e.toString());
       return Left(UnknownFailure(message: e.toString()));
     }

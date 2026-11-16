@@ -27,8 +27,8 @@ class ProfileManagerRemoteDatasourceImpl implements ProfileManagerRemoteDatasour
   @override
   Future<void> createUserDocument(UserProfileModel profile) async {
     try {
-      await _doc(profile.id).set(
-        profile.toFirestore(),
+      await _doc(profile.uid).set(
+        profile.toJson(),
         SetOptions(merge: true));
     } catch (e) {
       throw ProfileException(message: e.toString());
@@ -42,7 +42,7 @@ class ProfileManagerRemoteDatasourceImpl implements ProfileManagerRemoteDatasour
       if (!snapshot.exists) return null;
 
       final data = snapshot.data()!;
-      return UserProfileModel.fromFirestore(data);
+      return UserProfileModel.fromJson(data);
     } catch (e) {
       throw ProfileException(message: e.toString());
     }

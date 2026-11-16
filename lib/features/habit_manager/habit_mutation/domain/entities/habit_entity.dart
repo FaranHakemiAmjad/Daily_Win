@@ -14,7 +14,7 @@ class HabitEntity {
   final HabitSchedule schedule;
   final List<HabitReminder>? reminders;
 
-  HabitEntity.name({
+  HabitEntity({
     required this.id,
     required this.userID,
     required this.username,
@@ -164,19 +164,11 @@ extension HabitCategoryExtension on HabitCategory {
 
 // -----------------------------------------------------------------------------
 
-sealed class HabitTarget {
-  const HabitTarget();
-}
+sealed class HabitTarget;
 
-class NumericTarget extends HabitTarget {
-  final double value;
-  final HabitUnit unit;
-  const NumericTarget({required this.value, required this.unit});
-}
+class NumericTarget({required var double value, required var HabitUnit unit}) extends HabitTarget;
 
-class BooleanTarget extends HabitTarget {
-  const BooleanTarget();
-}
+class BooleanTarget extends HabitTarget;
 
 // -----------------------------------------------------------------------------
 
@@ -190,21 +182,10 @@ enum Weekday {
   sunday,
 }
 
-sealed class HabitSchedule {
-  const HabitSchedule();
-}
+sealed class HabitSchedule;
 
-class DailySchedule extends HabitSchedule {
-  const DailySchedule();
-}
-
-class WeeklySchedule extends HabitSchedule {
-  final Set<Weekday> days;
-
-  const WeeklySchedule({
-    required this.days,
-  });
-}
+class DailySchedule extends HabitSchedule;
+class WeeklySchedule({required var Set<Weekday> days}) extends HabitSchedule;
 
 class HabitReminder {
   final bool enabled;

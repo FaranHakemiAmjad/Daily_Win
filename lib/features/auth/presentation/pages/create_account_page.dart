@@ -102,7 +102,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Email Text Field
+                    // Email Text Field-----------------------------------------
                     Text("Email"),
                     TextFormField(
                       controller: _emailController,
@@ -130,7 +130,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Password Text Field
+                    // Password Text Field--------------------------------------
                     Text("Password"),
                     TextFormField(
                       controller: _passwordController,

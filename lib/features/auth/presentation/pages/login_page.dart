@@ -39,6 +39,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       password: _passwordController.text.trim(),
     );
 
+    if (!mounted) return;
+
     final state = ref.read(signInWithEmailProvider);
 
     state.whenOrNull(

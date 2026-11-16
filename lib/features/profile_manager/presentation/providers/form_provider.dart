@@ -6,17 +6,17 @@ import 'package:image_picker/image_picker.dart';
 import '../../domain/entities/user_profile_entity.dart';
 
 class UserProfileState {
-  final String username;
-  final DateTime birthDate;
-  final Gender gender;
+  final String? username;
+  final DateTime? birthDate;
+  final Gender? gender;
   final XFile? profileImage;
   final String? profileImagePath;
   final String? biography;
 
   const UserProfileState({
-    this.username = '',
-    required this.birthDate,
-    required this.gender,
+    this.username,
+    this.birthDate,
+    this.gender,
     this.profileImage,
     this.profileImagePath,
     this.biography,
@@ -44,7 +44,7 @@ class UserProfileState {
 class UserProfileNotifier extends StateNotifier<UserProfileState> {
   UserProfileNotifier()
     : super(
-        UserProfileState(birthDate: DateTime.now(), gender: Gender.nonBinary),
+        UserProfileState(),
       );
 
   void setUsername(String username) {

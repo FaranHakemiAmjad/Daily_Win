@@ -26,10 +26,10 @@ class CreateProfileNotifier extends AsyncNotifier<UserProfileEntity?> {
     final createProfileUseCase = sl<CreateUserProfileUseCase>();
 
     final profile = UserProfileEntity(
-      id: currentUser.uid,
-      username: profileState.username,
-      gender: profileState.gender,
-      dateOfBirth: profileState.birthDate,
+      uid: currentUser.uid,
+      username: profileState.username!,
+      gender: profileState.gender!,
+      dateOfBirth: profileState.birthDate!,
       profileImage: profileState.profileImage,
       biography: profileState.biography,
     );

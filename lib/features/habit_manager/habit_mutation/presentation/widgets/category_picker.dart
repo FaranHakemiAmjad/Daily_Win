@@ -47,6 +47,6 @@ class _CategoryPickerState extends State<CategoryPicker> {
           ),
         ),
       ),
-    );;
+    );
   }
 }

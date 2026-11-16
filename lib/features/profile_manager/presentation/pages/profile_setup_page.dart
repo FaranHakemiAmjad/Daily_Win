@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:daily_win/app/router/app_routes.dart';
 import 'package:daily_win/features/profile_manager/presentation/providers/create_profile_provider.dart';
-import 'package:daily_win/features/profile_manager/presentation/widgets/user_profile_form.dart';
+import 'package:daily_win/features/profile_manager/presentation/widgets/birth_date_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,62 +24,87 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
   bool _isImageUploaded = false;
   final _dateController = TextEditingController();
 
+  // ValueNotifier to track gender selection locally and trigger rebuilds only for gender UI
+  // late final ValueNotifier<Gender> _genderNotifier;
+  late final ValueNotifier<DateTime> _birthDateNotifier = ValueNotifier(DateTime.now());
+
   @override
   void initState() {
     super.initState();
+    // Initialize with form provider state or default to male
+    // final initialGender = ref.read(userProfileProvider).gender ?? Gender.male;
+    // _genderNotifier = ValueNotifier<Gender>(initialGender);
   }
 
   @override
   void dispose() {
     _dateController.dispose();
+    // _genderNotifier.dispose();
+    _birthDateNotifier.dispose();
     super.dispose();
+  }
+
+  Future<void> pickImage() async {
+    final XFile? image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    if (image != null) {
+      ref.read(userProfileProvider.notifier).setProfileImage(image);
+      setState(() {
+        _isImageUploaded = true;
+      });
+    }
+  }
+
+  Future<void> createProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final formState = ref.read(userProfileProvider);
+    // ref
+    //     .read(userProfileProvider.notifier)
+    //     .setBirthDate(
+    //       DateFormat('yyyy/MM/dd').parse(_dateController.text.trim()),
+    //     );
+
+    final profileState = UserProfileState(
+      username: formState.username,
+      birthDate: formState.birthDate,
+      gender: formState.gender,
+      profileImage: formState.profileImage,
+      biography: formState.biography,
+    );
+
+    await ref
+        .read(createProfileProvider.notifier)
+        .createProfile(profileState: profileState);
+    final state = ref.read(createProfileProvider);
+    state.whenOrNull(
+      data: (profile) {
+        if (profile != null && mounted) {
+          context.push(AppRoutes.home);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Profile Created Successfully!")),
+          );
+        }
+      },
+      error: (error, stacktrace) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
 
     final formState = ref.watch(userProfileProvider);
-
     final profileState = ref.watch(createProfileProvider);
-
     final isLoading = profileState.isLoading;
-
-    Future<void> pickImage() async {
-      final XFile? image = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-      );
-      ref.read(userProfileProvider.notifier).setProfileImage(image!);
-      setState(() {
-        _isImageUploaded = true;
-      });
-    }
-
-    Future<void> createProfile() async {
-
-      if (!_formKey.currentState!.validate()) return;
-      ref
-          .read(userProfileProvider.notifier)
-          .setBirthDate(DateFormat.yMd().parse(_dateController.text.trim()));
-      final profileState = UserProfileState(username: formState.username, birthDate: formState.birthDate, gender: formState.gender, profileImage: formState.profileImage, biography: formState.biography);
-      await ref.read(createProfileProvider.notifier).createProfile(profileState: profileState);
-      final state = ref.read(createProfileProvider);
-      state.whenOrNull(
-        data: (profile) {
-          if (profile != null && mounted) {
-            context.push(AppRoutes.home);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Done")));
-          }
-        },
-        error: (error, stacktrace) {
-
-      }
-      );
-    }
-
+    final gender = ref.watch(userProfileProvider.select((s) => s.gender));
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-
       appBar: AppBar(
         title: Text(
           'Create Account',
@@ -89,7 +114,7 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsetsGeometry.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,25 +126,36 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Profile Pic Field
+                      // Profile Pic Field--------------------------------------
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                              GestureDetector(
-                                onTap: pickImage,
-                                child: CircleAvatar(
-                                  radius: 65.0,
-                                  backgroundColor: Colors.grey.shade300,
-                                  backgroundImage: _isImageUploaded ? FileImage(File(formState.profileImage!.path)) : null,
-                                  child: !_isImageUploaded ? Icon(Icons.add_a_photo_outlined,color: Colors.black87,) : null,
-                                ),
-                              ),
+                          GestureDetector(
+                            onTap: pickImage,
+                            child: CircleAvatar(
+                              radius: 65.0,
+                              backgroundColor: Colors.grey.shade300,
+                              backgroundImage:
+                                  _isImageUploaded &&
+                                      formState.profileImage != null
+                                  ? FileImage(
+                                      File(formState.profileImage!.path),
+                                    )
+                                  : null,
+                              child: !_isImageUploaded
+                                  ? const Icon(
+                                      Icons.add_a_photo_outlined,
+                                      color: Colors.black87,
+                                    )
+                                  : null,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20.0),
 
-                      // Username Text Field
+                      // Username Text Field------------------------------------
                       Text(
                         "Username",
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -133,7 +169,6 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                               .read(userProfileProvider.notifier)
                               .setUsername(value);
                         },
-                        // controller: _emailController,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           label: Text(
@@ -154,91 +189,58 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                       ),
                       const SizedBox(height: 20.0),
 
-                      //   Birth Date Text Field
+                      // Birth Date Text Field----------------------------------
                       Text(
                         "Birth Date",
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextFormField(
-                        controller: _dateController,
-                        // onChanged: (value) {
-                        //   ref
-                        //       .read(userProfileProvider.notifier)
-                        //       .setBirthDate(DateFormat.yMd().parse(value));
-                        // },
-                        // controller: _emailController,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          label: Text(
-                            'yyyy/mm/dd',
-                            style: TextStyle(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.secondaryFixedDim,
-                            ),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your birth date';
-                          }
-
-                          final regex = RegExp(
-                            r'^\d{4}/(0[1-9]|1[0-2])/(0[1-9]|[12]\d|3[01])$',
-                          );
-
-                          if (!regex.hasMatch(value)) {
-                            return 'Use format yyyy/MM/dd';
-                          }
-
-                          try {
-                            DateFormat('yyyy/MM/dd').parseStrict(value);
-                          } catch (_) {
-                            return 'Invalid date';
-                          }
-
-                          return null;
-                        },
+                      const SizedBox(height: 20.0),
+                      ValueListenableBuilder(
+                        valueListenable: _birthDateNotifier,
+                        builder: (context, value, child) {
+                          return BirthDatePicker();
+                        }
                       ),
                       const SizedBox(height: 20.0),
 
-                      //Gender Selection
+                      // Gender Selection---------------------------------------
                       Text(
                         "Gender",
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       RadioGroup<Gender>(
-                        groupValue: Gender.male,
-                        onChanged: (value) {
-                          ref
-                              .read(userProfileProvider.notifier)
-                              .setGender(value!);
-                        },
-                        child: Column(
-                          children: [
-                            RadioListTile(
-                              value: Gender.male,
-                              title: Text('Male'),
+                            groupValue: gender,
+                            onChanged: (Gender? value) {
+                              if (value != null) {
+                                ref
+                                    .read(userProfileProvider.notifier)
+                                    .setGender(value);
+                              }
+                            },
+                            child: const Column(
+                              children: [
+                                RadioListTile<Gender>(
+                                  value: Gender.male,
+                                  title: Text('Male'),
+                                ),
+                                RadioListTile<Gender>(
+                                  value: Gender.female,
+                                  title: Text('Female'),
+                                ),
+                                RadioListTile<Gender>(
+                                  value: Gender.nonBinary,
+                                  title: Text('Non Binary'),
+                                ),
+                              ],
                             ),
-                            RadioListTile(
-                              value: Gender.female,
-                              title: Text('Female'),
-                            ),
-                            RadioListTile(
-                              value: Gender.nonBinary,
-                              title: Text('Non Binary'),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20.0),
+                          ),
+                      const SizedBox(height: 20.0),
 
-                      //   Bio Text Field
+                      // Bio Text Field-----------------------------------------
                       TextFormField(
                         onChanged: (value) {
                           ref
@@ -247,7 +249,7 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                         },
                         minLines: 1,
                         maxLines: 4,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           label: Text("Bio (Optional)"),
                           border: OutlineInputBorder(),
                         ),
@@ -257,6 +259,7 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
                 ),
               ),
             ),
+            // Submit Button----------------------------------------------------
             FilledButton(
               onPressed: isLoading ? null : createProfile,
               style: FilledButton.styleFrom(
